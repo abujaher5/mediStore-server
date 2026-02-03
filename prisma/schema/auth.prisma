@@ -9,6 +9,9 @@ model User {
   updatedAt     DateTime  @updatedAt
   sessions      Session[]
   accounts      Account[]
+  role String?  @default("CUSTOMER")
+  phone String?
+
   medicines Medicine[] @relation("SellerMedicines")
   orders Order[] @relation("CustomerOrders")
   reviews Review[]

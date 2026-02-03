@@ -18,9 +18,3 @@ datasource db {
 
 
 
-
-// enum Role {
-//   ADMIN
-//   SELLER
-//   CUSTOMER
-// }
