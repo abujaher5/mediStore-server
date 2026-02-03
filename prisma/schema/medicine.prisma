@@ -6,5 +6,17 @@ model Medicine{
     stock Int
     manufacturer String
     sellerId String
+    seller User @relation("SellerMedicines",fields: [sellerId],references: [id])
+    categoryId String
+    category Category @relation(fields: [categoryId],references: [id])
+    // reviews Review[]
+    // orderItems OrderItems[]
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    @@index([name])
+    @@index([price])
+    @@index([categoryId])
+    @@index([sellerId])
 
 }
