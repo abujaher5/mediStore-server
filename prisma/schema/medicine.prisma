@@ -1,0 +1,10 @@
+model Medicine{
+    id String @id @default(uuid())
+    name String
+    description String
+    price Float
+    stock Int
+    manufacturer String
+    sellerId String
+
+}
