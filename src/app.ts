@@ -4,6 +4,7 @@ import cors from "cors";
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { medicineRouter } from "./modules/medicine/medicine.router";
+import { categoryRouter } from "./modules/category/category.router";
 
 const app: Application = express();
 
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use("/api/medicines", medicineRouter);
 app.use("/api/seller", medicineRouter);
+app.use("/api/admin", categoryRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");

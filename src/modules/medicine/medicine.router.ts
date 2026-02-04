@@ -8,7 +8,7 @@ router.get("/", medicineController.getAllMedicines);
 
 router.post(
   "/medicines",
-  auth(UserRole.SELLER, UserRole.CUSTOMER),
+  auth(UserRole.SELLER, UserRole.CUSTOMER, UserRole.ADMIN),
   medicineController.addMedicine,
 );
 // router.get("/:id");
