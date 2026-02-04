@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { medicineService } from "./medicine.service";
+import { UserRole } from "../../middlewares/auth";
 
 const addMedicine = async (req: Request, res: Response) => {
   try {
@@ -27,9 +28,13 @@ const addMedicine = async (req: Request, res: Response) => {
 
 const getAllMedicines = async (req: Request, res: Response) => {
   try {
-    const result = await medicineService.getAllMedicines();
+    const { search } = req.query;
+    const searchString = typeof search === "string" ? search : undefined;
 
-    console.log("Get so many medicine", result);
+    const result = await medicineService.getAllMedicines({
+      search: searchString,
+    });
+
     res.status(200).json(result);
   } catch (error) {
     res.status(400).json({
@@ -39,7 +44,80 @@ const getAllMedicines = async (req: Request, res: Response) => {
   }
 };
 
+const getMedicineDetails = async (req: Request, res: Response) => {
+  try {
+    const { medicineId } = req.params;
+
+    if (!medicineId) {
+      throw new Error("Medicine id is required!!");
+    }
+    const result = await medicineService.getMedicineDetails(
+      medicineId as string,
+    );
+    return res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot get  medicines details..!!",
+      details: error,
+    });
+  }
+};
+
+const updateMedicine = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized..!!");
+    }
+
+    const { medicineId } = req.params;
+    const isSeller = user.role === UserRole.SELLER;
+    const result = await medicineService.updateMedicine(
+      medicineId as string,
+      req.body,
+      user.id,
+      isSeller,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot Update  Medicines Details..!!",
+      details: error,
+    });
+  }
+};
+const deleteMedicine = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("You are unauthorized!!");
+    }
+    const { medicineId } = req.params;
+
+    const isSeller = user.role === UserRole.SELLER;
+
+    const result = await medicineService.deleteMedicine(
+      medicineId as string,
+
+      user.id,
+      isSeller,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot Delete This Medicines..!!",
+      details: error,
+    });
+  }
+};
+
 export const medicineController = {
   getAllMedicines,
   addMedicine,
+  getMedicineDetails,
+  updateMedicine,
+  deleteMedicine,
 };
