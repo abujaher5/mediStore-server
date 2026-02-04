@@ -3,7 +3,6 @@ rating      Int
 comment     String
 userId      String
 medicineId  String
-user        User     @relation(fields: [userId], references: [id])
 medicine    Medicine @relation(fields: [medicineId], references: [id])
 createdAt   DateTime @default(now())
 updatedAt   DateTime @updatedAt

@@ -19,7 +19,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 
 app.use("/api/medicines", medicineRouter);
-app.use("/api/seller/medicines", medicineRouter);
+app.use("/api/seller", medicineRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");
