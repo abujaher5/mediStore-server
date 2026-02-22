@@ -5,6 +5,7 @@ model Order{
     totalAmount Float
     address String
     phone String
+    items OrderItem[]
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 
