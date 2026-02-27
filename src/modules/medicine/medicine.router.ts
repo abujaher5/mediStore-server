@@ -5,6 +5,7 @@ import auth, { UserRole } from "../../middlewares/auth";
 const router = express.Router();
 
 router.get("/", medicineController.getAllMedicines);
+
 router.get("/:medicineId", medicineController.getMedicineDetails);
 
 router.post(

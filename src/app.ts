@@ -23,9 +23,9 @@ app.use(express.json());
 
 app.use("/api/medicines", medicineRouter);
 app.use("/api/seller", medicineRouter);
-app.use("/api/admin", categoryRouter);
+app.use("/api", categoryRouter);
 app.use("/api/admin/users", userRouter);
-app.use("/api/users", userRouter);
+app.use("/api", userRouter);
 app.use("/api/orders", orderRouter);
 
 app.get("/", (req, res) => {
