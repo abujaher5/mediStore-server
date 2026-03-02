@@ -7,9 +7,12 @@ model Medicine{
     manufacturer String
     sellerId String
     categoryId String
+    seller User @relation("SellerMedicines",fields: [sellerId],references: [id])
     category Category @relation(fields: [categoryId],references: [id])
     reviews Review[]
     orderItems OrderItem[]
+    order Order []
+
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
 

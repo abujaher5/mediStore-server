@@ -1,12 +1,19 @@
+import { Order } from "../../../generated/prisma/client";
 import { prisma } from "../../lib/prisma";
 
-const createOrder = async (payload: {
-  customerId: string;
-  medicineId: string;
-  quantity: number;
-  address: string;
-  phone: string;
-}) => {
+const createOrder = async (
+  payload: Omit<Order, "id" | "createdAt" | "updatedAt">,
+  userId: string,
+) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      id: userId,
+    },
+  });
+  if (!user) {
+    throw new Error("User not found.");
+  }
+
   const medicine = await prisma.medicine.findUniqueOrThrow({
     where: {
       id: payload.medicineId,
@@ -17,17 +24,31 @@ const createOrder = async (payload: {
 
   const result = await prisma.order.create({
     data: {
-      customerId: payload.customerId,
-      address: payload.address,
-      phone: payload.phone,
+      ...payload,
       totalAmount,
-      items: {
-        create: {
-          medicineId: payload.medicineId,
-          quantity: payload.quantity,
-          price: medicine.price,
-        },
-      },
+    },
+  });
+
+  return result;
+};
+
+const getAllOrders = async () => {
+  const result = await prisma.order.findMany();
+  return result;
+};
+const getMyOrders = async (customerId: string) => {
+  const allOrders = await prisma.order.findMany({
+    where: {
+      customerId,
+    },
+  });
+  return allOrders;
+};
+
+const getOrderDetails = async (orderId: string) => {
+  const result = await prisma.order.findUniqueOrThrow({
+    where: {
+      id: orderId,
     },
   });
   return result;
@@ -35,4 +56,7 @@ const createOrder = async (payload: {
 
 export const orderService = {
   createOrder,
+  getAllOrders,
+  getMyOrders,
+  getOrderDetails,
 };

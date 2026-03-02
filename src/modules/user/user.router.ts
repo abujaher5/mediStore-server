@@ -10,10 +10,6 @@ router.get(
   userController.getAllUsers,
 );
 
-router.get(
-  "/me",
-  auth(UserRole.ADMIN, UserRole.SELLER),
-  userController.getCurrentUser,
-);
+router.get("/me", userController.getCurrentUser);
 
 export const userRouter: Router = router;

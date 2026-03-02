@@ -17,7 +17,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
-    data: req.user,
+    data: req.user?.email,
   });
 };
 
