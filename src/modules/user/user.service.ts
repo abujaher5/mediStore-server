@@ -39,8 +39,22 @@ const getCurrentUser = async (
   };
   next();
 };
+const updateUserStatus = async (userId: string, status: string) => {
+  await prisma.user.findFirstOrThrow({
+    where: {
+      id: userId,
+    },
+  });
+
+  const result = await prisma.user.update({
+    where: { id: userId },
+    data: { status },
+  });
+  return result;
+};
 
 export const userService = {
   getAllUsers,
   getCurrentUser,
+  updateUserStatus,
 };

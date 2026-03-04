@@ -3,7 +3,7 @@ import cors from "cors";
 
 import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
-import { medicineRouter } from "./modules/medicine/medicine.router";
+import { medicineRouter } from "./modules/medicine/medicine.route";
 import { categoryRouter } from "./modules/category/category.router";
 import { userRouter } from "./modules/user/user.route";
 import { orderRouter } from "./modules/order/order.route";

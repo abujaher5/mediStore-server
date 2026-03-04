@@ -15,5 +15,10 @@ router.get(
   auth(UserRole.ADMIN, UserRole.SELLER, UserRole.CUSTOMER),
   userController.getCurrentUser,
 );
+router.patch(
+  "/:userId",
+  auth(UserRole.ADMIN, UserRole.SELLER),
+  userController.updateOrderStatus,
+);
 
 export const userRouter: Router = router;
