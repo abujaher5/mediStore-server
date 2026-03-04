@@ -1,7 +1,5 @@
 model Order{
     id String @id @default(uuid())
-
-
     customerId String
     medicineId String
     status OrderStatus @default(PENDING)

@@ -36,6 +36,7 @@ const getAllOrders = async () => {
   const result = await prisma.order.findMany();
   return result;
 };
+
 const getMyOrders = async (customerId: string) => {
   const allOrders = await prisma.order.findMany({
     where: {

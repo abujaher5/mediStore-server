@@ -12,7 +12,7 @@ const getCurrentUser = async (
   next: NextFunction,
 ) => {
   const session = await auth.api.getSession({
-    headers: req.headers,
+    headers: new Headers(req.headers as Record<string, string>),
   });
   if (!session) {
     return res.status(401).json({

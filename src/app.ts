@@ -5,8 +5,9 @@ import { auth } from "./lib/auth";
 import { toNodeHandler } from "better-auth/node";
 import { medicineRouter } from "./modules/medicine/medicine.router";
 import { categoryRouter } from "./modules/category/category.router";
-import { userRouter } from "./modules/user/user.router";
-import { orderRouter } from "./modules/order/order.router";
+import { userRouter } from "./modules/user/user.route";
+import { orderRouter } from "./modules/order/order.route";
+import { sellerRouter } from "./modules/seller/seller.route";
 
 const app: Application = express();
 
@@ -22,7 +23,7 @@ app.all("/api/auth/*splat", toNodeHandler(auth));
 app.use(express.json());
 
 app.use("/api/medicines", medicineRouter);
-app.use("/api/seller", medicineRouter);
+app.use("/api/seller", sellerRouter);
 app.use("/api", categoryRouter);
 app.use("/api/admin/users", userRouter);
 app.use("/api", userRouter);
