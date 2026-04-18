@@ -6,7 +6,7 @@ const router = express.Router();
 
 router.get(
   "/",
-  auth(UserRole.ADMIN, UserRole.SELLER),
+  // auth(UserRole.ADMIN, UserRole.SELLER),
   userController.getAllUsers,
 );
 

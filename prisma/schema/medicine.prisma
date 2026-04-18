@@ -3,6 +3,7 @@ model Medicine{
     name String
     description String
     price Float
+    imageUrl String
     stock Int
     manufacturer String
     sellerId String

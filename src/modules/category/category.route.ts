@@ -5,10 +5,10 @@ import { categoryController } from "./category.controller";
 const router = express.Router();
 
 router.post(
-  "/categories",
+  "/admin/categories",
   auth(UserRole.ADMIN),
   categoryController.createCategory,
 );
-router.get("/categories", categoryController.getAllCategories);
+router.get("/admin/categories", categoryController.getAllCategories);
 
 export const categoryRouter: Router = router;
