@@ -18,7 +18,9 @@ router.get(
 router.patch(
   "/:userId",
   auth(UserRole.ADMIN, UserRole.SELLER),
-  userController.updateOrderStatus,
+  userController.updateUserStatus,
 );
+
+router.delete("/:userId", auth(UserRole.ADMIN), userController.deleteUser);
 
 export const userRouter: Router = router;

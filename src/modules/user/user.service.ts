@@ -53,8 +53,32 @@ const updateUserStatus = async (userId: string, status: string) => {
   return result;
 };
 
+const deleteUser = async (userId: string, isAdmin: string) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+    // select: {
+    //   id: true,
+    //   userId: true,
+    // },
+  });
+
+  console.log(userData);
+
+  if (!isAdmin && userData.id !== userId) {
+    throw new Error("You are not admin to delete user..");
+  }
+  return await prisma.user.delete({
+    where: {
+      id: userId,
+    },
+  });
+};
+
 export const userService = {
   getAllUsers,
   getCurrentUser,
   updateUserStatus,
+  deleteUser,
 };

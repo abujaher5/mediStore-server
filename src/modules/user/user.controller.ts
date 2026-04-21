@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
+import { UserRole } from "../../middlewares/auth";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -21,7 +22,7 @@ const getCurrentUser = async (req: Request, res: Response) => {
   });
 };
 
-const updateOrderStatus = async (req: Request, res: Response) => {
+const updateUserStatus = async (req: Request, res: Response) => {
   try {
     const userId = req.params.userId;
 
@@ -37,8 +38,31 @@ const updateOrderStatus = async (req: Request, res: Response) => {
   }
 };
 
+const deleteUser = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+
+    if (!user) {
+      throw new Error("You are unauthorized!!");
+    }
+    const { userId } = req.params;
+
+    const isAdmin = user.role === UserRole.ADMIN;
+
+    const result = await userService.deleteUser(userId as string, isAdmin);
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot Delete This User!!",
+      details: error,
+    });
+  }
+};
+
 export const userController = {
   getAllUsers,
   getCurrentUser,
-  updateOrderStatus,
+  updateUserStatus,
+  deleteUser,
 };
