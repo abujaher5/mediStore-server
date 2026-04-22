@@ -13,7 +13,15 @@ const addMedicine = async (
   return result;
 };
 
-const getAllMedicines = async ({ search }: { search?: string | undefined }) => {
+const getAllMedicines = async ({
+  search,
+  description,
+  manufacturer,
+}: {
+  search?: string | undefined;
+  description?: string;
+  manufacturer?: string;
+}) => {
   const andConditions: MedicineWhereInput[] = [];
   if (search) {
     andConditions.push({
