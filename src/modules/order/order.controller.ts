@@ -16,6 +16,7 @@ const createOrder = async (req: Request, res: Response) => {
     });
   }
 };
+
 const getAllOrders = async (req: Request, res: Response) => {
   try {
     console.log(req.user);

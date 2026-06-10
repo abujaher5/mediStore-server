@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { categoryService } from "./category.service";
+import { UserRole } from "../../middlewares/auth";
 
 const createCategory = async (req: Request, res: Response) => {
   try {
@@ -26,7 +27,31 @@ const getAllCategories = async (req: Request, res: Response) => {
   }
 };
 
+const deleteCategories = async (req: Request, res: Response) => {
+  try {
+    const user = req.user;
+    if (!user) {
+      throw new Error("You are unauthorized !!");
+    }
+
+    const { categoryId } = req.params;
+    const isAdmin = user.role === UserRole.ADMIN;
+    const result = await categoryService.deleteCategory(
+      categoryId as string,
+      isAdmin,
+    );
+
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot Delete This Category!!!",
+      details: error,
+    });
+  }
+};
+
 export const categoryController = {
   createCategory,
   getAllCategories,
+  deleteCategories,
 };

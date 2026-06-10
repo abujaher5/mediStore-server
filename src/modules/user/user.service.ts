@@ -53,7 +53,7 @@ const updateUserStatus = async (userId: string, status: string) => {
   return result;
 };
 
-const deleteUser = async (userId: string, isAdmin: string) => {
+const deleteUser = async (userId: string, isAdmin: boolean) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       id: userId,

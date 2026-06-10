@@ -17,10 +17,12 @@ const getAllMedicines = async ({
   search,
   description,
   manufacturer,
+  price,
 }: {
   search?: string | undefined;
   description?: string;
   manufacturer?: string;
+  price?: number;
 }) => {
   const andConditions: MedicineWhereInput[] = [];
   if (search) {
@@ -44,6 +46,12 @@ const getAllMedicines = async ({
             mode: "insensitive",
           },
         },
+        // {
+        //   price: {
+        //     contains: search,
+        //     mode: "insensitive",
+        //   },
+        // },
       ],
     });
   }
@@ -54,6 +62,25 @@ const getAllMedicines = async ({
   });
   return allMedicine;
 };
+
+// const getAllMedicines = async ({ search }: { search?: string }) => {
+//   const whereCondition = search
+//     ? {
+//         name: {
+//           contains: search,
+//           mode: "insensitive" as const,
+//         },
+//       }
+//     : {};
+//   console.log("Where", whereCondition);
+
+//   const medicines = await prisma.medicine.findMany({
+//     where: whereCondition,
+//   });
+//   console.log("Result", medicines);
+
+//   return medicines;
+// };
 
 const getMedicineDetails = async (medicineId: string) => {
   const medicineDetails = await prisma.medicine.findUnique({
