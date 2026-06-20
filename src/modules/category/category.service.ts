@@ -11,6 +11,22 @@ const getAllCategories = async () => {
   const result = await prisma.category.findMany();
   return result;
 };
+
+const updateCategoryName = async (categoryId: string, name: string) => {
+  await prisma.category.findFirstOrThrow({
+    where: {
+      id: categoryId,
+    },
+  });
+
+  const result = await prisma.category.update({
+    where: {
+      id: categoryId,
+    },
+    data: { name },
+  });
+  return result;
+};
 const deleteCategory = async (categoryId: string, isAdmin: boolean) => {
   const categoryData = await prisma.category.findUniqueOrThrow({
     where: {
@@ -32,4 +48,5 @@ export const categoryService = {
   createCategory,
   getAllCategories,
   deleteCategory,
+  updateCategoryName,
 };

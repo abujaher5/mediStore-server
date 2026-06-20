@@ -8,6 +8,7 @@ import { categoryRouter } from "./modules/category/category.route";
 import { userRouter } from "./modules/user/user.route";
 import { orderRouter } from "./modules/order/order.route";
 import { sellerRouter } from "./modules/seller/seller.route";
+import { reviewRouter } from "./modules/review/review.route";
 
 const app: Application = express();
 
@@ -28,6 +29,7 @@ app.use("/api/admin/categories", categoryRouter);
 app.use("/api/admin/users", userRouter);
 app.use("/api", userRouter);
 app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");

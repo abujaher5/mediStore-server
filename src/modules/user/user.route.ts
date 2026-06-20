@@ -4,10 +4,12 @@ import auth, { UserRole } from "../../middlewares/auth";
 
 const router = express.Router();
 
+router.get("/", auth(UserRole.ADMIN), userController.getAllUsers);
+
 router.get(
-  "/",
-  // auth(UserRole.ADMIN, UserRole.SELLER),
-  userController.getAllUsers,
+  "/dashboard-stats",
+  auth(UserRole.ADMIN),
+  userController.getAdminStats,
 );
 
 router.get(

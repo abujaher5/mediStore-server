@@ -71,6 +71,7 @@ const getAllMedicines = async ({
 //           mode: "insensitive" as const,
 //         },
 //       }
+
 //     : {};
 //   console.log("Where", whereCondition);
 
@@ -86,6 +87,9 @@ const getMedicineDetails = async (medicineId: string) => {
   const medicineDetails = await prisma.medicine.findUnique({
     where: {
       id: medicineId,
+    },
+    include: {
+      category: true,
     },
   });
   return medicineDetails;
@@ -148,8 +152,8 @@ const deleteMedicine = async (
 };
 
 export const medicineService = {
-  getAllMedicines,
   addMedicine,
+  getAllMedicines,
   getMedicineDetails,
   updateMedicine,
   deleteMedicine,

@@ -27,6 +27,23 @@ const getAllCategories = async (req: Request, res: Response) => {
   }
 };
 
+const updateCategoryName = async (req: Request, res: Response) => {
+  try {
+    const categoryId = req.params.categoryId;
+    const { name } = req.body;
+    const result = await categoryService.updateCategoryName(
+      categoryId as string,
+      name,
+    );
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot Update This Category Name..!!",
+      details: error,
+    });
+  }
+};
+
 const deleteCategories = async (req: Request, res: Response) => {
   try {
     const user = req.user;
@@ -54,4 +71,5 @@ export const categoryController = {
   createCategory,
   getAllCategories,
   deleteCategories,
+  updateCategoryName,
 };

@@ -15,6 +15,18 @@ const getAllUsers = async (req: Request, res: Response) => {
   }
 };
 
+const getAdminStats = async (req: Request, res: Response) => {
+  try {
+    const result = await userService.getAdminStats();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(400).json({
+      error: "Cannot get admin stats",
+      details: error,
+    });
+  }
+};
+
 const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
@@ -65,4 +77,5 @@ export const userController = {
   getCurrentUser,
   updateUserStatus,
   deleteUser,
+  getAdminStats,
 };

@@ -12,6 +12,17 @@ router.post(
 );
 
 router.get(
+  "/my-medicines",
+  auth(UserRole.SELLER),
+  sellerControllers.getMyMedicines,
+);
+router.get(
+  "/medicines/dashboard-stats",
+  auth(UserRole.SELLER),
+  sellerControllers.getSellerStats,
+);
+
+router.get(
   "/orders",
   auth(UserRole.SELLER),
   sellerControllers.getOrderedMedicines,
@@ -22,8 +33,13 @@ router.patch(
   auth(UserRole.SELLER),
   sellerControllers.updateOrderStatus,
 );
-router.put(
+router.patch(
   "/medicines/:medicineId",
+  auth(UserRole.SELLER),
+  sellerControllers.updateStock,
+);
+router.patch(
+  "/medicines/updateMedicine/:medicineId",
   auth(UserRole.SELLER),
   sellerControllers.updateMedicine,
 );

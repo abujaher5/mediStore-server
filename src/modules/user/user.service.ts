@@ -2,6 +2,30 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 
+const getAdminStats = async () => {
+  const totalUsers = await prisma.user.count();
+  const totalSellers = await prisma.user.count({
+    where: {
+      role: "SELLER",
+    },
+  });
+  const totalCustomers = await prisma.user.count({
+    where: {
+      role: "CUSTOMER",
+    },
+  });
+  const totalMedicines = await prisma.medicine.count();
+  const totalOrders = await prisma.order.count();
+
+  return {
+    totalUsers,
+    totalSellers,
+    totalCustomers,
+    totalMedicines,
+    totalOrders,
+  };
+};
+
 const getAllUsers = async () => {
   return await prisma.user.findMany();
 };
@@ -81,4 +105,5 @@ export const userService = {
   getCurrentUser,
   updateUserStatus,
   deleteUser,
+  getAdminStats,
 };
