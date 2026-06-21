@@ -9,6 +9,7 @@ import { userRouter } from "./modules/user/user.route";
 import { orderRouter } from "./modules/order/order.route";
 import { sellerRouter } from "./modules/seller/seller.route";
 import { reviewRouter } from "./modules/review/review.route";
+import { customerRouter } from "./modules/customer/customer.route";
 
 const app: Application = express();
 
@@ -30,6 +31,7 @@ app.use("/api/admin/users", userRouter);
 app.use("/api", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/customer", customerRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");
