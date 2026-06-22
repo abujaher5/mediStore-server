@@ -5,6 +5,7 @@ import httpStatus from "http-status";
 const createOrder = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const customerId = req.user?.id;
+
     if (!customerId) {
       res.status(httpStatus.UNAUTHORIZED).json({
         success: false,
@@ -13,22 +14,71 @@ const createOrder = async (req: Request, res: Response, next: NextFunction) => {
       return;
     }
 
-    const result = await orderService.createOrder(customerId, req.body); // ✅ customerId first
+    const result = await orderService.createOrder(customerId, req.body);
 
-    res.status(httpStatus.CREATED).json({
+    // CASE 1 → CASH ON DELIVERY
+    if (result?.type === "COD") {
+      res.status(httpStatus.CREATED).json({
+        success: true,
+        message: "Order placed successfully",
+        data: {
+          type: "COD",
+          orderId: result.orderId,
+        },
+      });
+      return;
+    }
+
+    // CASE 2 → ONLINE PAYMENT — return Stripe checkout URL to frontend
+    if (result?.type === "ONLINE") {
+      res.status(httpStatus.CREATED).json({
+        success: true,
+        message: "Redirecting to payment gateway",
+        data: {
+          type: "ONLINE",
+          orderId: result.orderId,
+          paymentUrl: result.paymentUrl, // ✅ frontend redirects here
+        },
+      });
+      return;
+    }
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ✅ NEW — called from /payment-success page after Stripe redirects back
+const verifyPayment = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  try {
+    const { sessionId } = req.body;
+
+    if (!sessionId) {
+      res.status(httpStatus.BAD_REQUEST).json({
+        success: false,
+        message: "Session ID is required",
+      });
+      return;
+    }
+
+    const result = await orderService.verifyPayment(sessionId);
+
+    res.status(httpStatus.OK).json({
       success: true,
-      message: "Order placed successfully",
-      data: { orderId: result.id },
+      message: "Payment verified successfully",
+      data: result,
     });
   } catch (error) {
-    next(error); // ✅ pass to global error handler
+    next(error);
   }
 };
 
 const getAllOrders = async (req: Request, res: Response) => {
   try {
     const result = await orderService.getAllOrders();
-
     res.status(httpStatus.OK).json(result);
   } catch (error) {
     res.status(400).json({
@@ -71,7 +121,6 @@ const getOrderDetails = async (
     const { orderId } = req.params;
     const customerId = req.user?.id;
 
-    // Validate orderId: express can type params as string | string[] | undefined
     if (!orderId || Array.isArray(orderId)) {
       res.status(httpStatus.BAD_REQUEST).json({
         success: false,
@@ -88,7 +137,7 @@ const getOrderDetails = async (
       return;
     }
 
-    const result = await orderService.getSingleOrder(orderId, customerId); // ✅ pass customerId for ownership check
+    const result = await orderService.getSingleOrder(orderId, customerId);
 
     res.status(httpStatus.OK).json({
       success: true,
@@ -102,6 +151,7 @@ const getOrderDetails = async (
 
 export const orderController = {
   createOrder,
+  verifyPayment, // ✅ exported
   getAllOrders,
   getMyOrders,
   getOrderDetails,

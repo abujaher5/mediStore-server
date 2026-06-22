@@ -3,6 +3,9 @@ model Order {
   customerId    String
   status        OrderStatus   @default(PENDING)
   paymentMethod PaymentMethod @default(COD)
+  paymentStatus PaymentStatus @default(PENDING)
+  stripeSessionId String?
+  
   totalAmount   Float
   subtotal      Float
   deliveryFee   Float         @default(0)
@@ -51,4 +54,10 @@ enum OrderStatus {
 enum PaymentMethod {
   COD
   ONLINE
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  FAILED
 }

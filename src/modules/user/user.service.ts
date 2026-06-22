@@ -27,7 +27,8 @@ const getAdminStats = async () => {
 };
 
 const getAllUsers = async () => {
-  return await prisma.user.findMany();
+  const result = await prisma.user.findMany();
+  return result;
 };
 
 const getCurrentUser = async (

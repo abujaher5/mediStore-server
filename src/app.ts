@@ -28,7 +28,7 @@ app.use("/api/medicines", medicineRouter);
 app.use("/api/seller", sellerRouter);
 app.use("/api/admin/categories", categoryRouter);
 app.use("/api/admin/users", userRouter);
-app.use("/api", userRouter);
+// app.use("/api", userRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/customer", customerRouter);

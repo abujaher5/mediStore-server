@@ -5,6 +5,7 @@ import { UserRole } from "../../middlewares/auth";
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await userService.getAllUsers();
+    console.log(result);
 
     res.status(200).json(result);
   } catch (error) {
