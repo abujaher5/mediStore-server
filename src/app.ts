@@ -1,7 +1,7 @@
 import express, { Application } from "express";
 import cors from "cors";
 
-import { auth } from "./lib/auth";
+import { auth } from "./lib/auth.js";
 import { toNodeHandler } from "better-auth/node";
 import { medicineRouter } from "./modules/medicine/medicine.route";
 import { categoryRouter } from "./modules/category/category.route";
