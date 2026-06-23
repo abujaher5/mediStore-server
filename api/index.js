@@ -8,7 +8,8 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 
 // src/lib/prisma.ts
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { neon } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 
 // generated/prisma/client.ts
 import * as path from "path";
@@ -67,8 +68,12 @@ globalThis["__dirname"] = path.dirname(fileURLToPath(import.meta.url));
 var PrismaClient = getPrismaClientClass();
 
 // src/lib/prisma.ts
-var connectionString = `${process.env.DATABASE_URL}`;
-var adapter = new PrismaPg({ connectionString });
+var connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  throw new Error("DATABASE_URL environment variable is not defined. Please add it to your environment variables.");
+}
+var sql = neon(connectionString);
+var adapter = new PrismaNeon(sql);
 var prisma = new PrismaClient({ adapter });
 
 // src/lib/auth.ts

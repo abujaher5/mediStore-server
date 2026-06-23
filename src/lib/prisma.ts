@@ -1,10 +1,16 @@
 import "dotenv/config";
-import { PrismaPg } from "@prisma/adapter-pg";
+import { neon } from "@neondatabase/serverless";
+import { PrismaNeon } from "@prisma/adapter-neon";
 import { PrismaClient } from "../../generated/prisma/client";
 
-const connectionString = `${process.env.DATABASE_URL}`;
+const connectionString = process.env.DATABASE_URL;
 
-const adapter = new PrismaPg({ connectionString });
+if (!connectionString) {
+  throw new Error("DATABASE_URL environment variable is not defined. Please add it to your environment variables.");
+}
+
+const sql = neon(connectionString);
+const adapter = new PrismaNeon(sql);
 const prisma = new PrismaClient({ adapter });
 
 export { prisma };

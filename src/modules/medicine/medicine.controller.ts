@@ -5,7 +5,6 @@ import { UserRole } from "../../middlewares/auth";
 const addMedicine = async (req: Request, res: Response) => {
   try {
     const sellerId = req.user?.id;
-    // console.log("user", user);
 
     if (!sellerId) {
       return res.status(400).json({
