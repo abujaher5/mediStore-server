@@ -13,9 +13,11 @@ import { customerRouter } from "./modules/customer/customer.route";
 
 const app: Application = express();
 
+app.set("trust proxy", 1);
+
 app.use(
   cors({
-    origin: process.env.APP_URL,
+    origin: ["http://localhost:3000", process.env.FRONTEND_URL!],
     credentials: true,
   }),
 );

@@ -1,4 +1,4 @@
-import { Medicine, Order, OrderStatus } from "../../../generated/prisma/client";
+import { Medicine, Order, OrderStatus } from "../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma";
 
 const addMedicine = async (

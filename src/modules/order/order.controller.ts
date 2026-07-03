@@ -151,7 +151,7 @@ const getOrderDetails = async (
 
 export const orderController = {
   createOrder,
-  verifyPayment, // ✅ exported
+  verifyPayment,
   getAllOrders,
   getMyOrders,
   getOrderDetails,

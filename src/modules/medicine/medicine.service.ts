@@ -1,7 +1,8 @@
 import { title } from "node:process";
-import { Medicine } from "../../../generated/prisma/client";
+
 import { prisma } from "../../lib/prisma";
-import { MedicineWhereInput } from "../../../generated/prisma/models";
+import { MedicineWhereInput } from "../../generated/prisma/models";
+import { Medicine } from "../../generated/prisma/client.js";
 
 const addMedicine = async (
   data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">,

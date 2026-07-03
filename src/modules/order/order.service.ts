@@ -1,3 +1,4 @@
+import { Prisma } from "../../generated/prisma/client.js";
 import { prisma } from "../../lib/prisma";
 import Stripe from "stripe";
 
@@ -58,60 +59,62 @@ const createOrder = async (customerId: string, payload: ICreateOrder) => {
   */
 
   if (payload.paymentMethod === "COD") {
-    const order = await prisma.$transaction(async (tx) => {
-      const newOrder = await tx.order.create({
-        data: {
-          customerId,
-
-          status: "PENDING",
-
-          paymentMethod: "COD",
-
-          paymentStatus: "PENDING",
-
-          totalAmount: payload.totalAmount,
-          subtotal: payload.subtotal,
-          deliveryFee: payload.deliveryFee,
-
-          customerName: payload.customer.name,
-          customerPhone: payload.customer.phone,
-          customerEmail: payload.customer.email ?? null,
-          customerAddress: payload.customer.address,
-          customerCity: payload.customer.city,
-          notes: payload.customer.notes ?? null,
-
-          items: {
-            create: payload.items.map((item) => ({
-              name: item.name,
-              medicine: {
-                connect: {
-                  id: item.medicineId,
-                },
-              },
-              quantity: item.quantity,
-              price: item.price,
-              subtotal: item.price * item.quantity,
-            })),
-          },
-        },
-      });
-
-      // Reduce stock immediately for COD
-      for (const item of payload.items) {
-        await tx.medicine.update({
-          where: {
-            id: item.medicineId,
-          },
+    const order = await prisma.$transaction(
+      async (tx: Prisma.TransactionClient) => {
+        const newOrder = await tx.order.create({
           data: {
-            stock: {
-              decrement: item.quantity,
+            customerId,
+
+            status: "PENDING",
+
+            paymentMethod: "COD",
+
+            paymentStatus: "PENDING",
+
+            totalAmount: payload.totalAmount,
+            subtotal: payload.subtotal,
+            deliveryFee: payload.deliveryFee,
+
+            customerName: payload.customer.name,
+            customerPhone: payload.customer.phone,
+            customerEmail: payload.customer.email ?? null,
+            customerAddress: payload.customer.address,
+            customerCity: payload.customer.city,
+            notes: payload.customer.notes ?? null,
+
+            items: {
+              create: payload.items.map((item) => ({
+                name: item.name,
+                medicine: {
+                  connect: {
+                    id: item.medicineId,
+                  },
+                },
+                quantity: item.quantity,
+                price: item.price,
+                subtotal: item.price * item.quantity,
+              })),
             },
           },
         });
-      }
 
-      return newOrder;
-    });
+        // Reduce stock immediately for COD
+        for (const item of payload.items) {
+          await tx.medicine.update({
+            where: {
+              id: item.medicineId,
+            },
+            data: {
+              stock: {
+                decrement: item.quantity,
+              },
+            },
+          });
+        }
+
+        return newOrder;
+      },
+    );
 
     return {
       type: "COD",
@@ -190,9 +193,9 @@ const createOrder = async (customerId: string, payload: ICreateOrder) => {
         },
       ],
 
-      success_url: `${process.env.APP_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
+      success_url: `${process.env.FRONTEND_URL}/payment-success?session_id={CHECKOUT_SESSION_ID}`,
 
-      cancel_url: `${process.env.APP_URL}/payment-cancel`,
+      cancel_url: `${process.env.FRONTEND_URL}/payment-cancel`,
     });
 
     // Save stripe session id
@@ -234,7 +237,7 @@ const verifyPayment = async (sessionId: string) => {
   }
 
   // Update order
-  await prisma.$transaction(async (tx) => {
+  await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     await tx.order.update({
       where: {
         id: order.id,
