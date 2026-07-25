@@ -4,6 +4,9 @@ import { prisma } from "./prisma";
 import nodemailer from "nodemailer";
 import { oAuthProxy } from "better-auth/plugins";
 
+import { createAuthMiddleware, APIError } from "better-auth/api";
+import { UserStatus } from "../generated/prisma/enums";
+
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
   port: 587,
@@ -65,7 +68,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     autoSignIn: true,
-    requireEmailVerification: true,
+    requireEmailVerification: false,
   },
 
   emailVerification: {
@@ -169,6 +172,26 @@ export const auth = betterAuth({
       // accessType: "offline",
       // prompt: "select_account consent",
     },
+  },
+
+  hooks: {
+    before: createAuthMiddleware(async (ctx) => {
+      if (ctx.path !== "/sign-in/email") {
+        return;
+      }
+
+      const email = ctx.body?.email;
+      if (!email) return;
+      const user = await prisma.user.findUnique({
+        where: { email },
+      });
+
+      if (user?.status === UserStatus.DELETED) {
+        throw new APIError("FORBIDDEN", {
+          message: "Your account has been deleted.Please contact support.",
+        });
+      }
+    }),
   },
 
   plugins: [],

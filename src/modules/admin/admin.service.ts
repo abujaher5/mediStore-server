@@ -27,12 +27,18 @@ const getAdminStats = async () => {
   };
 };
 
-const getAllUsers = async () => {
+const getAllUsers = async (status: string) => {
+  const where = status && status !== "ALL" ? { status } : {};
   const result = await prisma.user.findMany({
-    where: { status: UserStatus.ACTIVE },
+    where,
+    orderBy: {
+      createdAt: "desc",
+    },
   });
   return result;
 };
+
+// where: { status: UserStatus.ACTIVE },
 const getAllDeletedUsers = async () => {
   const result = await prisma.user.findMany({
     where: { status: UserStatus.DELETED },
@@ -87,37 +93,81 @@ const updateUserStatus = async (userId: string, status: UserStatus) => {
   return result;
 };
 
-const deleteUser = async (userId: string, isAdmin: boolean) => {
+const deleteUser = async (
+  userId: string,
+  isAdmin: boolean,
+  loggedInUserId: string,
+) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
       id: userId,
     },
   });
 
-  if (!isAdmin && userData.id !== userId) {
+  if (!isAdmin && loggedInUserId !== userId) {
     throw new Error("You are not admin to delete user..");
   }
+  if (userData.status === UserStatus.DELETED) {
+    throw new Error("User is already deleted");
+  }
 
-  await prisma.user.update({
-    where: {
-      id: userId,
-    },
-    data: {
-      status: UserStatus.DELETED,
-    },
-  });
+  await prisma.$transaction([
+    prisma.user.update({
+      where: {
+        id: userId,
+      },
+      data: {
+        status: UserStatus.DELETED,
+      },
+    }),
 
-  await prisma.session.deleteMany({
-    where: { userId },
-  });
+    prisma.session.deleteMany({
+      where: { userId },
+    }),
+  ]);
 
   return { success: true, message: "User deleted successfully" };
 };
 
-export const userService = {
+const restoreUser = async (
+  userId: string,
+  isAdmin: boolean,
+  loggedInUserId: string,
+) => {
+  const userData = await prisma.user.findUniqueOrThrow({
+    where: {
+      id: userId,
+    },
+  });
+  if (!isAdmin && loggedInUserId !== userId) {
+    throw new Error("You are not admin to restore user..");
+  }
+
+  if (userData.status === UserStatus.ACTIVE) {
+    throw new Error("User is already active");
+  }
+
+  const restoredUser = await prisma.user.update({
+    where: {
+      id: userId,
+    },
+    data: {
+      status: UserStatus.ACTIVE,
+    },
+  });
+
+  return {
+    success: true,
+    message: "User restored successfully",
+    data: restoredUser,
+  };
+};
+
+export const adminService = {
+  getAdminStats,
   getAllUsers,
   getCurrentUser,
   updateUserStatus,
   deleteUser,
-  getAdminStats,
+  restoreUser,
 };

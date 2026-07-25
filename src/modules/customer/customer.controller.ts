@@ -4,7 +4,6 @@ import { customerService } from "./customer.service";
 const getCustomerStats = async (req: Request, res: Response) => {
   try {
     const customerId = req.user?.id;
-
     const result = await customerService.getCustomerStats(customerId as string);
 
     res.status(200).json({

@@ -63,7 +63,7 @@ const getCustomerStats = async (customerId: string) => {
     pendingOrders,
     completedOrders,
     shippedOrders,
-    totalSpent: totalSpent._sum.totalAmount || 0,
+    totalSpent: totalSpent._sum.totalAmount ?? 0,
     reviewsGiven,
   };
 };

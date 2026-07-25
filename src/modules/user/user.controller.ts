@@ -1,13 +1,17 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { UserRole } from "../../middlewares/auth";
+import { success } from "better-auth";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
     const result = await userService.getAllUsers();
-    console.log(result);
 
-    res.status(200).json(result);
+    res.status(200).json({
+      success: true,
+      message: "all users get successfully",
+      data: result,
+    });
   } catch (error) {
     res.status(400).json({
       error: "Cannot get all the users",
@@ -66,6 +70,7 @@ const deleteUser = async (req: Request, res: Response) => {
 
     res.status(200).json(result);
   } catch (error) {
+    console.error(error);
     res.status(400).json({
       error: "Cannot Delete This User!!",
       details: error,

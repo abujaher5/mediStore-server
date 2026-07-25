@@ -8,7 +8,7 @@ model User {
   updatedAt     DateTime  @updatedAt
   role          String?   @default("CUSTOMER")
   phone         String?
-  status        String?   @default("ACTIVE")
+  status        UserStatus   @default(ACTIVE)
   sessions      Session[]
   accounts      Account[]
 
@@ -67,4 +67,11 @@ model Verification {
 
   @@index([identifier])
   @@map("verification")
+}
+
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  DELETED
 }

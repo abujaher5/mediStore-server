@@ -15,6 +15,7 @@ declare global {
         email: string;
         name: string;
         role: string;
+        status: string;
         emailVerified: boolean;
       };
     }
@@ -42,11 +43,19 @@ const auth = (...roles: UserRole[]) => {
         });
       }
 
+      if (session.user.status === "DELETED") {
+        return res.status(403).json({
+          success: false,
+          message: "Your account has been deleted. Please contact support.",
+        });
+      }
+
       req.user = {
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
         role: session.user.role as string,
+        status: session.user.status as string,
         emailVerified: session.user.emailVerified,
       };
 
