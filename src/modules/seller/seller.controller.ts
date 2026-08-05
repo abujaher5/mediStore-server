@@ -36,7 +36,6 @@ const addMedicine = async (req: Request, res: Response) => {
 const getMyMedicines = async (req: Request, res: Response) => {
   try {
     const sellerId = req.user?.id;
-    console.log(req.user);
 
     if (!sellerId) {
       return res.status(401).json({
@@ -90,7 +89,7 @@ const updateMedicine = async (req: Request, res: Response) => {
     }
 
     const { medicineId } = req.params;
-    console.log(medicineId, req.body);
+
     const isSeller = user.role === UserRole.SELLER;
     const result = await sellerServices.updateMedicine(
       medicineId as string,
@@ -101,7 +100,6 @@ const updateMedicine = async (req: Request, res: Response) => {
       user.id,
       isSeller,
     );
-    console.log("From controller", result);
 
     res.status(200).json(result);
   } catch (error) {
@@ -181,7 +179,6 @@ const updateOrderStatus = async (req: Request, res: Response) => {
     const orderId = req.params.orderId;
 
     const { status } = req.body;
-    console.log(orderId, status);
 
     const result = await sellerServices.updateOrderStatus(
       orderId as string,

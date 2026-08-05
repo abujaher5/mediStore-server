@@ -5,25 +5,11 @@ import { asyncHandler } from "../../shared/asyncHandler";
 import { sendResponse } from "../../shared/sendResponse";
 import { UserStatus } from "../../generated/prisma/enums";
 
-// const getAllUsers = async (req: Request, res: Response) => {
-//   try {
-//     const result = await adminService.getAllUsers();
-
-//     res.status(200).json({
-//       success: true,
-//       message: "all users get successfully",
-//       data: result,
-//     });
-//   } catch (error) {
-//     res.status(400).json({
-//       error: "Cannot get all the users",
-//       details: error,
-//     });
-//   }
-// };
 const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   const { status } = req.query;
-  const result = await adminService.getAllUsers(status as UserStatus);
+  const result = await adminService.getAllUsers(
+    status as UserStatus | "ALL" | undefined,
+  );
   sendResponse(res, {
     httpStatusCode: 200,
     success: true,
@@ -51,24 +37,24 @@ const getCurrentUser = async (req: Request, res: Response) => {
   });
 };
 
-const updateUserStatus = async (req: Request, res: Response) => {
-  try {
-    const userId = req.params.userId;
+// const updateUserStatus = async (req: Request, res: Response) => {
+//   try {
+//     const userId = req.params.userId;
 
-    const { status } = req.body;
+//     const { status } = req.body;
 
-    const result = await adminService.updateUserStatus(
-      userId as string,
-      status,
-    );
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(400).json({
-      error: "Cannot Update This User Status..!!",
-      details: error,
-    });
-  }
-};
+//     const result = await adminService.updateUserStatus(
+//       userId as string,
+//       status,
+//     );
+//     res.status(200).json(result);
+//   } catch (error) {
+//     res.status(400).json({
+//       error: "Cannot Update This User Status..!!",
+//       details: error,
+//     });
+//   }
+// };
 
 const deleteUser = async (req: Request, res: Response) => {
   try {
@@ -125,7 +111,7 @@ const restoreUser = asyncHandler(async (req: Request, res: Response) => {
 export const adminController = {
   getAllUsers,
   getCurrentUser,
-  updateUserStatus,
+  // updateUserStatus,
   deleteUser,
   getAdminStats,
   restoreUser,

@@ -5,7 +5,11 @@ import { adminController } from "./admin.controller";
 
 const router = express.Router();
 
-router.get("/", auth(UserRole.ADMIN), adminController.getAllUsers);
+router.get(
+  "/",
+  //  auth(UserRole.ADMIN),
+  adminController.getAllUsers,
+);
 
 router.get(
   "/dashboard-stats",

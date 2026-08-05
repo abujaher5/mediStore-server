@@ -99,7 +99,6 @@ const updateMedicine = async (
   if (isSeller && medicineData.sellerId !== sellerId) {
     throw new Error("You are not the owner");
   }
-  console.log(medicineData.id);
 
   const result = await prisma.medicine.update({
     where: {
@@ -107,7 +106,6 @@ const updateMedicine = async (
     },
     data: { name, price, stock, manufacturer },
   });
-  console.log("updated data", result);
 
   return result;
 };

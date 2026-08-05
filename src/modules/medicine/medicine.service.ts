@@ -1,5 +1,3 @@
-import { title } from "node:process";
-
 import { prisma } from "../../lib/prisma";
 import { MedicineWhereInput } from "../../generated/prisma/models";
 import { Medicine } from "../../generated/prisma/client.js";

@@ -27,10 +27,11 @@ const getAdminStats = async () => {
   };
 };
 
-const getAllUsers = async () => {
+const getAllUsers = async (status: string) => {
   const result = await prisma.user.findMany({
-    where: { status: UserStatus.ACTIVE },
+    where: { status: status as UserStatus },
   });
+
   return result;
 };
 const getAllDeletedUsers = async () => {

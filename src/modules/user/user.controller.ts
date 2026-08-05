@@ -2,10 +2,12 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { UserRole } from "../../middlewares/auth";
 import { success } from "better-auth";
+import { UserStatus } from "../../generated/prisma/enums";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
-    const result = await userService.getAllUsers();
+    const { status } = req.query;
+    const result = await userService.getAllUsers(status as UserStatus);
 
     res.status(200).json({
       success: true,

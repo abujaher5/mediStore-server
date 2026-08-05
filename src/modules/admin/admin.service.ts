@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import { UserStatus } from "../../generated/prisma/enums";
+import { Prisma } from "../../generated/prisma/client";
 
 const getAdminStats = async () => {
   const totalUsers = await prisma.user.count();
@@ -27,21 +28,14 @@ const getAdminStats = async () => {
   };
 };
 
-const getAllUsers = async (status: string) => {
-  const where = status && status !== "ALL" ? { status } : {};
+const getAllUsers = async (status: UserStatus | "ALL" | undefined) => {
+  const where: Prisma.UserWhereInput =
+    status && status !== "ALL" ? { status } : {};
   const result = await prisma.user.findMany({
     where,
     orderBy: {
       createdAt: "desc",
     },
-  });
-  return result;
-};
-
-// where: { status: UserStatus.ACTIVE },
-const getAllDeletedUsers = async () => {
-  const result = await prisma.user.findMany({
-    where: { status: UserStatus.DELETED },
   });
   return result;
 };
@@ -79,19 +73,19 @@ const getCurrentUser = async (
   };
   next();
 };
-const updateUserStatus = async (userId: string, status: UserStatus) => {
-  await prisma.user.findFirstOrThrow({
-    where: {
-      id: userId,
-    },
-  });
+// const updateUserStatus = async (userId: string, status: UserStatus) => {
+//   await prisma.user.findFirstOrThrow({
+//     where: {
+//       id: userId,
+//     },
+//   });
 
-  const result = await prisma.user.update({
-    where: { id: userId },
-    data: { status },
-  });
-  return result;
-};
+//   const result = await prisma.user.update({
+//     where: { id: userId },
+//     data: { status },
+//   });
+//   return result;
+// };
 
 const deleteUser = async (
   userId: string,
@@ -167,7 +161,7 @@ export const adminService = {
   getAdminStats,
   getAllUsers,
   getCurrentUser,
-  updateUserStatus,
+
   deleteUser,
   restoreUser,
 };
