@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { UserRole } from "../../middlewares/auth";
-import { success } from "better-auth";
 import { UserStatus } from "../../generated/prisma/enums";
 
 const getAllUsers = async (req: Request, res: Response) => {
@@ -21,19 +20,6 @@ const getAllUsers = async (req: Request, res: Response) => {
     });
   }
 };
-
-const getAdminStats = async (req: Request, res: Response) => {
-  try {
-    const result = await userService.getAdminStats();
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(400).json({
-      error: "Cannot get admin stats",
-      details: error,
-    });
-  }
-};
-
 const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,

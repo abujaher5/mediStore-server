@@ -5,12 +5,12 @@ import { auth } from "./lib/auth.js";
 import { toNodeHandler } from "better-auth/node";
 import { medicineRouter } from "./modules/medicine/medicine.route";
 import { categoryRouter } from "./modules/category/category.route";
-import { userRouter } from "./modules/user/user.route";
 import { orderRouter } from "./modules/order/order.route";
 import { sellerRouter } from "./modules/seller/seller.route";
 import { reviewRouter } from "./modules/review/review.route";
 import { customerRouter } from "./modules/customer/customer.route";
 import { adminRouter } from "./modules/admin/admin.route.js";
+import globalErrorHandler from "./middlewares/globalErrorHandler.js";
 
 const app: Application = express();
 
@@ -40,5 +40,7 @@ app.use("/api/customer", customerRouter);
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");
 });
+
+app.use(globalErrorHandler);
 
 export default app;

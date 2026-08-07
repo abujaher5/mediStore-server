@@ -120,7 +120,7 @@ const deleteUser = async (
     }),
   ]);
 
-  return { success: true, message: "User deleted successfully" };
+  return;
 };
 
 const restoreUser = async (
@@ -161,7 +161,6 @@ export const adminService = {
   getAdminStats,
   getAllUsers,
   getCurrentUser,
-
   deleteUser,
   restoreUser,
 };

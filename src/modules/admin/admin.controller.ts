@@ -18,17 +18,15 @@ const getAllUsers = asyncHandler(async (req: Request, res: Response) => {
   });
 });
 
-const getAdminStats = async (req: Request, res: Response) => {
-  try {
-    const result = await adminService.getAdminStats();
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(400).json({
-      error: "Cannot get admin stats",
-      details: error,
-    });
-  }
-};
+const getAdminStats = asyncHandler(async (req: Request, res: Response) => {
+  const result = await adminService.getAdminStats();
+  sendResponse(res, {
+    httpStatusCode: 200,
+    success: true,
+    message: "admin stats get successfully",
+    data: result,
+  });
+});
 
 const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json({
@@ -37,51 +35,51 @@ const getCurrentUser = async (req: Request, res: Response) => {
   });
 };
 
-// const updateUserStatus = async (req: Request, res: Response) => {
+const deleteUser = asyncHandler(async (req: Request, res: Response) => {
+  const user = req.user;
+  if (!user) {
+    throw new Error("You are unauthorized!!");
+  }
+  const { userId } = req.params;
+  const isAdmin = user.role === UserRole.ADMIN;
+  await adminService.deleteUser(
+    userId as string,
+    isAdmin,
+    req.user?.id as string,
+  );
+
+  sendResponse(res, {
+    httpStatusCode: 200,
+    success: true,
+    message: "User deleted successfully",
+  });
+});
+// const deleteUser = async (req: Request, res: Response) => {
 //   try {
-//     const userId = req.params.userId;
+//     const user = req.user;
 
-//     const { status } = req.body;
+//     if (!user) {
+//       throw new Error("You are unauthorized!!");
+//     }
+//     const { userId } = req.params;
 
-//     const result = await adminService.updateUserStatus(
+//     const isAdmin = user.role === UserRole.ADMIN;
+
+//     const result = await adminService.deleteUser(
 //       userId as string,
-//       status,
+//       isAdmin,
+//       req.user?.id as string,
 //     );
+
 //     res.status(200).json(result);
 //   } catch (error) {
+//     console.error(error);
 //     res.status(400).json({
-//       error: "Cannot Update This User Status..!!",
+//       error: "Cannot Delete This User!!",
 //       details: error,
 //     });
 //   }
 // };
-
-const deleteUser = async (req: Request, res: Response) => {
-  try {
-    const user = req.user;
-
-    if (!user) {
-      throw new Error("You are unauthorized!!");
-    }
-    const { userId } = req.params;
-
-    const isAdmin = user.role === UserRole.ADMIN;
-
-    const result = await adminService.deleteUser(
-      userId as string,
-      isAdmin,
-      req.user?.id as string,
-    );
-
-    res.status(200).json(result);
-  } catch (error) {
-    console.error(error);
-    res.status(400).json({
-      error: "Cannot Delete This User!!",
-      details: error,
-    });
-  }
-};
 
 const restoreUser = asyncHandler(async (req: Request, res: Response) => {
   try {

@@ -3,41 +3,11 @@ import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import { UserStatus } from "../../generated/prisma/enums";
 
-const getAdminStats = async () => {
-  const totalUsers = await prisma.user.count();
-  const totalSellers = await prisma.user.count({
-    where: {
-      role: "SELLER",
-    },
-  });
-  const totalCustomers = await prisma.user.count({
-    where: {
-      role: "CUSTOMER",
-    },
-  });
-  const totalMedicines = await prisma.medicine.count();
-  const totalOrders = await prisma.order.count();
-
-  return {
-    totalUsers,
-    totalSellers,
-    totalCustomers,
-    totalMedicines,
-    totalOrders,
-  };
-};
-
 const getAllUsers = async (status: string) => {
   const result = await prisma.user.findMany({
     where: { status: status as UserStatus },
   });
 
-  return result;
-};
-const getAllDeletedUsers = async () => {
-  const result = await prisma.user.findMany({
-    where: { status: UserStatus.DELETED },
-  });
   return result;
 };
 
@@ -120,5 +90,4 @@ export const userService = {
   getCurrentUser,
   updateUserStatus,
   deleteUser,
-  getAdminStats,
 };
