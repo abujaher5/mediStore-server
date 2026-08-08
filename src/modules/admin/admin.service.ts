@@ -119,8 +119,6 @@ const deleteUser = async (
       where: { userId },
     }),
   ]);
-
-  return;
 };
 
 const restoreUser = async (
@@ -140,8 +138,7 @@ const restoreUser = async (
   if (userData.status === UserStatus.ACTIVE) {
     throw new Error("User is already active");
   }
-
-  const restoredUser = await prisma.user.update({
+  await prisma.user.update({
     where: {
       id: userId,
     },
@@ -149,12 +146,6 @@ const restoreUser = async (
       status: UserStatus.ACTIVE,
     },
   });
-
-  return {
-    success: true,
-    message: "User restored successfully",
-    data: restoredUser,
-  };
 };
 
 export const adminService = {
