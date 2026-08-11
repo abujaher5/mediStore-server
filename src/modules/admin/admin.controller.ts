@@ -63,24 +63,18 @@ const restoreUser = asyncHandler(async (req: Request, res: Response) => {
     throw new Error("You are unauthorized!!");
   }
 
-  const result = await adminService.restoreUser(
-    userId as string,
-    isAdmin,
-    user.id,
-  );
+  await adminService.restoreUser(userId as string, isAdmin, user.id);
 
   sendResponse(res, {
     httpStatusCode: 200,
     success: true,
-    message: "User restored successfully from controller",
-    data: result,
+    message: "User restored successfully",
   });
 });
 
 export const adminController = {
   getAllUsers,
   getCurrentUser,
-  // updateUserStatus,
   deleteUser,
   getAdminStats,
   restoreUser,

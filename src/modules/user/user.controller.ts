@@ -2,6 +2,9 @@ import { Request, Response } from "express";
 import { userService } from "./user.service";
 import { UserRole } from "../../middlewares/auth";
 import { UserStatus } from "../../generated/prisma/enums";
+import { asyncHandler } from "../../shared/asyncHandler";
+import { sendResponse } from "../../shared/sendResponse";
+import { ApiError } from "../../errorHelpers/ApiError";
 
 const getAllUsers = async (req: Request, res: Response) => {
   try {
@@ -43,6 +46,32 @@ const updateUserStatus = async (req: Request, res: Response) => {
   }
 };
 
+const updateProfile = asyncHandler(async (req: Request, res: Response) => {
+  const userId = req.user?.id;
+
+  if (!userId) {
+    throw new ApiError(401, "Unauthorized");
+  }
+  const { name, email, phone } = req.body;
+
+  // if (!name || !email || !phone) {
+  //   throw new ApiError(400, "Name, email and phone are required");
+  // }
+
+  const updatedUser = await userService.updateProfile(userId, {
+    name,
+    email,
+    phone,
+  });
+
+  sendResponse(res, {
+    httpStatusCode: 200,
+    success: true,
+    message: "Profile Updated Successfully",
+    data: updatedUser,
+  });
+});
+
 const deleteUser = async (req: Request, res: Response) => {
   try {
     const user = req.user;
@@ -71,5 +100,5 @@ export const userController = {
   getCurrentUser,
   updateUserStatus,
   deleteUser,
-  getAdminStats,
+  updateProfile,
 };

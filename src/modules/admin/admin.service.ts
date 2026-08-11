@@ -73,19 +73,6 @@ const getCurrentUser = async (
   };
   next();
 };
-// const updateUserStatus = async (userId: string, status: UserStatus) => {
-//   await prisma.user.findFirstOrThrow({
-//     where: {
-//       id: userId,
-//     },
-//   });
-
-//   const result = await prisma.user.update({
-//     where: { id: userId },
-//     data: { status },
-//   });
-//   return result;
-// };
 
 const deleteUser = async (
   userId: string,

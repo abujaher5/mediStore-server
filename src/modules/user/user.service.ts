@@ -2,6 +2,14 @@ import { NextFunction, Request, Response } from "express";
 import { prisma } from "../../lib/prisma";
 import { auth } from "../../lib/auth";
 import { UserStatus } from "../../generated/prisma/enums";
+import { User } from "../../generated/prisma/client";
+import { ApiError } from "../../errorHelpers/ApiError";
+
+interface UpdateProfilePayload {
+  name: string;
+  email: string;
+  phone: string;
+}
 
 const getAllUsers = async (status: string) => {
   const result = await prisma.user.findMany({
@@ -58,6 +66,32 @@ const updateUserStatus = async (userId: string, status: UserStatus) => {
   return result;
 };
 
+const updateProfile = async (userId: string, payload: UpdateProfilePayload) => {
+  const { name, email, phone } = payload;
+
+  const existingUser = await prisma.user.findFirst({
+    where: { email, NOT: { id: userId } },
+  });
+
+  if (existingUser) {
+    throw new ApiError(400, "This email is already in use");
+  }
+
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: { name, email, phone },
+    select: {
+      id: true,
+      name: true,
+      email: true,
+      phone: true,
+      role: true,
+    },
+  });
+
+  return updatedUser;
+};
+
 const deleteUser = async (userId: string, isAdmin: boolean) => {
   const userData = await prisma.user.findUniqueOrThrow({
     where: {
@@ -89,5 +123,6 @@ export const userService = {
   getAllUsers,
   getCurrentUser,
   updateUserStatus,
+  updateProfile,
   deleteUser,
 };
