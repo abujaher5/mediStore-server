@@ -26,6 +26,7 @@ const getAllUsers = async (req: Request, res: Response) => {
 const getCurrentUser = async (req: Request, res: Response) => {
   res.status(200).json({
     success: true,
+    message: "Your profile data get successfully",
     data: req.user,
   });
 };

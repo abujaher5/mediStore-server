@@ -49,6 +49,7 @@ const getCurrentUser = async (
     name: user.name,
     role: user.role || "Customer",
     emailVerified: user.emailVerified,
+    status: user.status,
   };
   next();
 };
@@ -70,10 +71,10 @@ const updateProfile = async (userId: string, payload: UpdateProfilePayload) => {
   const { name, email, phone } = payload;
 
   const existingUser = await prisma.user.findFirst({
-    where: { email, NOT: { id: userId } },
+    where: { id: userId },
   });
 
-  if (existingUser) {
+  if (!existingUser) {
     throw new ApiError(400, "This email is already in use");
   }
 

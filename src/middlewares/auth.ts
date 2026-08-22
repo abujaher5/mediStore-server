@@ -14,6 +14,7 @@ declare global {
         id: string;
         email: string;
         name: string;
+        phone?: number | null;
         role: string;
         status: string;
         emailVerified: boolean;
@@ -49,11 +50,16 @@ const auth = (...roles: UserRole[]) => {
           message: "Your account has been deleted. Please contact support.",
         });
       }
+      const phone =
+        session.user && session.user.phone != null
+          ? Number(session.user.phone)
+          : null;
 
       req.user = {
         id: session.user.id,
         email: session.user.email,
         name: session.user.name,
+        phone,
         role: session.user.role as string,
         status: session.user.status as string,
         emailVerified: session.user.emailVerified,
