@@ -14,73 +14,55 @@ const addMedicine = async (
 
 const getAllMedicines = async ({
   search,
-  description,
-  manufacturer,
-  price,
+  page,
+  limit,
 }: {
   search?: string | undefined;
-  description?: string;
-  manufacturer?: string;
-  price?: number;
+  page?: number;
+  limit?: number;
 }) => {
+  const currentPage = page || 1;
+  const itemsPerPage = limit || 9;
+  const skip = (currentPage - 1) * itemsPerPage;
+
   const andConditions: MedicineWhereInput[] = [];
+
   if (search) {
     andConditions.push({
       OR: [
+        { name: { contains: search, mode: "insensitive" } },
         {
-          name: {
-            contains: search,
-            mode: "insensitive",
-          },
+          description: { contains: search, mode: "insensitive" },
         },
         {
-          description: {
-            contains: search,
-            mode: "insensitive",
-          },
+          manufacturer: { contains: search, mode: "insensitive" },
         },
-        {
-          manufacturer: {
-            contains: search,
-            mode: "insensitive",
-          },
-        },
-        // {
-        //   price: {
-        //     contains: search,
-        //     mode: "insensitive",
-        //   },
-        // },
       ],
     });
   }
-  const allMedicine = await prisma.medicine.findMany({
-    where: {
-      AND: andConditions,
+
+  const where = { AND: andConditions };
+
+  const [allMedicine, totalItems] = await Promise.all([
+    prisma.medicine.findMany({
+      where,
+      skip,
+      take: itemsPerPage,
+      orderBy: { createdAt: "desc" },
+    }),
+    prisma.medicine.count({ where }),
+  ]);
+
+  return {
+    data: allMedicine,
+    meta: {
+      totalItems,
+      totalPages: Math.ceil(totalItems / itemsPerPage),
+      currentPage,
+      itemsPerPage,
     },
-  });
-  return allMedicine;
+  };
 };
-
-// const getAllMedicines = async ({ search }: { search?: string }) => {
-//   const whereCondition = search
-//     ? {
-//         name: {
-//           contains: search,
-//           mode: "insensitive" as const,
-//         },
-//       }
-
-//     : {};
-//   console.log("Where", whereCondition);
-
-//   const medicines = await prisma.medicine.findMany({
-//     where: whereCondition,
-//   });
-//   console.log("Result", medicines);
-
-//   return medicines;
-// };
 
 const getMedicineDetails = async (medicineId: string) => {
   const medicineDetails = await prisma.medicine.findUnique({

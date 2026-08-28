@@ -27,14 +27,24 @@ const addMedicine = async (req: Request, res: Response) => {
 
 const getAllMedicines = async (req: Request, res: Response) => {
   try {
-    const { search } = req.query;
+    const { search, page, limit } = req.query;
+
     const searchString = typeof search === "string" ? search : undefined;
+
+    const pageNumber = page ? Number(page) : 1;
+    const limitNumber = limit ? Number(limit) : 9;
 
     const result = await medicineService.getAllMedicines({
       search: searchString,
+      page: pageNumber,
+      limit: limitNumber,
     });
 
-    res.status(200).json(result);
+    res.status(200).json({
+      success: true,
+      data: result.data,
+      meta: result.meta,
+    });
   } catch (error) {
     res.status(400).json({
       error: "Cannot get all medicines",
