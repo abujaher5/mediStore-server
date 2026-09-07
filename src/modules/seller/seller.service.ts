@@ -18,6 +18,14 @@ const getMyMedicines = async (sellerId: string) => {
     orderBy: {
       createdAt: "desc",
     },
+    include: {
+      category: {
+        select: {
+          id: true,
+          name: true,
+        },
+      },
+    },
   });
 
   return result;
