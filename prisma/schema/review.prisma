@@ -1,7 +1,8 @@
 model Review {
   id          String   @id @default(uuid())
-  quote       String
+  quote       String   @db.Text
   designation String
+  rating      Int      @default(5)
 
   userId      String
   user        User     @relation(fields: [userId], references: [id])

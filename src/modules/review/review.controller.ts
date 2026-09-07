@@ -4,11 +4,12 @@ import { reviewService } from "./review.service";
 const createReview = async (req: Request, res: Response) => {
   try {
     const userId = req.user?.id; // from auth middleware
-    const { quote, designation } = req.body;
+    const { quote, designation, rating } = req.body;
 
     const result = await reviewService.createReview(userId as string, {
       quote,
       designation,
+      rating: Number(rating),
     });
 
     res.status(201).json({
