@@ -69,6 +69,7 @@ const getCurrentUser = async (
     email: user.email,
     name: user.name,
     role: user.role || "Customer",
+    status: user.status,
     emailVerified: user.emailVerified,
   };
   next();

@@ -12,6 +12,7 @@ import { customerRouter } from "./modules/customer/customer.route";
 import { adminRouter } from "./modules/admin/admin.route.js";
 import globalErrorHandler from "./middlewares/globalErrorHandler.js";
 import { userRouter } from "./modules/user/user.route.js";
+import { roleChangeRequestRouter } from "./modules/role-change-request/role-change-request.route.js";
 
 const app: Application = express();
 
@@ -37,6 +38,7 @@ app.use("/api/admin/users", adminRouter);
 app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
 app.use("/api/customer", customerRouter);
+app.use("/api/role-change-requests", roleChangeRequestRouter);
 
 app.get("/", (req, res) => {
   res.send("Hello From MediStore");

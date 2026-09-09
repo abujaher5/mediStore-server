@@ -16,6 +16,7 @@ model User {
 
   orders  Order[]  @relation("CustomerOrders")
   reviews Review[]
+  roleChangeRequests RoleChangeRequest[] @relation("UserRoleChangeRequests")
 
   @@unique([email])
   @@map("user")

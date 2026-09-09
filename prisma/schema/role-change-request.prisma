@@ -1,0 +1,20 @@
+model RoleChangeRequest {
+  id            String        @id @default(uuid())
+  userId        String
+  user          User          @relation("UserRoleChangeRequests", fields: [userId], references: [id], onDelete: Cascade)
+  currentRole   String
+  requestedRole String
+  reason        String?
+  status        RequestStatus @default(PENDING)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([userId])
+  @@map("role_change_request")
+}
+
+enum RequestStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
