@@ -1,6 +1,11 @@
 import "dotenv/config";
+import dns from "node:dns";
+import net from "node:net";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient } from "../generated/prisma/client";
+
+dns.setDefaultResultOrder("ipv4first");
+net.setDefaultAutoSelectFamilyAttemptTimeout(10000);
 
 const connectionString = process.env.DATABASE_URL;
 
