@@ -67,14 +67,15 @@ export const auth = betterAuth({
 
   emailAndPassword: {
     enabled: true,
-    autoSignIn: true,
-    requireEmailVerification: false,
+    autoSignIn: false,
+    requireEmailVerification: true,
   },
 
   emailVerification: {
     sendOnSignUp: true,
+    sendOnSignIn: true,
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url, token }, request) => {
+    sendVerificationEmail: async ({ user, token }) => {
       try {
         const verificationUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
         const htmlTemplate = `
@@ -103,7 +104,7 @@ export const auth = betterAuth({
             <td style="padding:30px;">
               <h2 style="color:#111827;">Verify your email address</h2>
               <p style="color:#374151; font-size:16px; line-height:1.6;">
-                Thanks for signing up for <strong>Prisma Blog</strong>!  
+                Thanks for signing up for <strong>MediStore</strong>!  
                 Please confirm your email address by clicking the button below.
               </p>
 
@@ -139,7 +140,7 @@ export const auth = betterAuth({
           <!-- Footer -->
           <tr>
             <td style="background:#f9fafb; padding:20px; text-align:center; font-size:12px; color:#9ca3af;">
-              © ${new Date().getFullYear()} Prisma Blog. All rights reserved.
+              © ${new Date().getFullYear()} MediStore. All rights reserved.
             </td>
           </tr>
 
@@ -151,16 +152,15 @@ export const auth = betterAuth({
 </html>
 `;
         const info = await transporter.sendMail({
-          from: '"Prisma Blog" <prismablog@gmail.com>',
+          from: `"MediStore" <${process.env.APP_USER}>`,
           to: user.email,
-          subject: "Please Verify Your Email",
+          subject: "Verify your MediStore email",
           html: htmlTemplate,
         });
 
-        console.log("Message sent:", info.messageId);
+        console.log("Verification email sent:", info.messageId);
       } catch (error) {
-        console.error(error);
-        throw error;
+        console.error("Failed to send verification email:", error);
       }
     },
   },

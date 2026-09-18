@@ -30,6 +30,7 @@ const seedAdmin = async () => {
       },
       data: {
         role: adminData.role,
+        emailVerified: true,
       },
     });
 
