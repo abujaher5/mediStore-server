@@ -14,10 +14,12 @@ const addMedicine = async (
 
 const getAllMedicines = async ({
   search,
+  categoryId,
   page,
   limit,
 }: {
   search?: string | undefined;
+  categoryId?: string | undefined;
   page?: number;
   limit?: number;
 }) => {
@@ -41,6 +43,10 @@ const getAllMedicines = async ({
     });
   }
 
+  if (categoryId) {
+    andConditions.push({ categoryId });
+  }
+
   const where = { AND: andConditions };
 
   const [allMedicine, totalItems] = await Promise.all([
@@ -49,6 +55,7 @@ const getAllMedicines = async ({
       skip,
       take: itemsPerPage,
       orderBy: { createdAt: "desc" },
+      include: { category: true },
     }),
     prisma.medicine.count({ where }),
   ]);

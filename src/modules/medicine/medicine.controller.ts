@@ -27,15 +27,18 @@ const addMedicine = async (req: Request, res: Response) => {
 
 const getAllMedicines = async (req: Request, res: Response) => {
   try {
-    const { search, page, limit } = req.query;
+    const { search, categoryId, page, limit } = req.query;
 
     const searchString = typeof search === "string" ? search : undefined;
+    const categoryIdString =
+      typeof categoryId === "string" ? categoryId : undefined;
 
     const pageNumber = page ? Number(page) : 1;
     const limitNumber = limit ? Number(limit) : 9;
 
     const result = await medicineService.getAllMedicines({
       search: searchString,
+      categoryId: categoryIdString,
       page: pageNumber,
       limit: limitNumber,
     });
