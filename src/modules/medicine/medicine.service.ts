@@ -1,6 +1,7 @@
 import { prisma } from "../../lib/prisma";
 import { MedicineWhereInput } from "../../generated/prisma/models";
 import { Medicine } from "../../generated/prisma/client.js";
+import { ApiError } from "../../errorHelpers/ApiError";
 
 const addMedicine = async (
   data: Omit<Medicine, "id" | "createdAt" | "updatedAt" | "sellerId">,
@@ -100,7 +101,7 @@ const updateMedicine = async (
   });
 
   if (!isSeller && medicineData.sellerId !== sellerId) {
-    throw new Error("You are not the owner of this medicine..!!");
+    throw new ApiError(403, "You are not the owner of this medicine..!!");
   }
   const result = await prisma.medicine.update({
     where: {
@@ -128,7 +129,8 @@ const deleteMedicine = async (
   });
 
   if (!isSeller && medicineData.sellerId !== sellerId) {
-    throw new Error(
+    throw new ApiError(
+      403,
       "You are not the owner/creator of this Medicine to delete..",
     );
   }

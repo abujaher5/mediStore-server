@@ -1,15 +1,18 @@
-import { Request, Response } from "express";
+import { Request, Response, NextFunction } from "express";
 import { medicineService } from "./medicine.service";
 import { UserRole } from "../../middlewares/auth";
+import { ApiError } from "../../errorHelpers/ApiError";
 
-const addMedicine = async (req: Request, res: Response) => {
+const addMedicine = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const sellerId = req.user?.id;
 
     if (!sellerId) {
-      return res.status(400).json({
-        error: "Unauthorized!",
-      });
+      throw new ApiError(401, "Unauthorized!");
     }
     const result = await medicineService.addMedicine(
       req.body,
@@ -18,14 +21,15 @@ const addMedicine = async (req: Request, res: Response) => {
 
     res.status(201).json(result);
   } catch (error) {
-    res.status(400).json({
-      error: "Cannot add this medicines",
-      details: error,
-    });
+    next(error);
   }
 };
 
-const getAllMedicines = async (req: Request, res: Response) => {
+const getAllMedicines = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { search, categoryId, page, limit } = req.query;
 
@@ -49,37 +53,39 @@ const getAllMedicines = async (req: Request, res: Response) => {
       meta: result.meta,
     });
   } catch (error) {
-    res.status(400).json({
-      error: "Cannot get all medicines",
-      details: error,
-    });
+    next(error);
   }
 };
 
-const getMedicineDetails = async (req: Request, res: Response) => {
+const getMedicineDetails = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const { medicineId } = req.params;
 
     if (!medicineId) {
-      throw new Error("Medicine id is required!!");
+      throw new ApiError(400, "Medicine id is required!!");
     }
     const result = await medicineService.getMedicineDetails(
       medicineId as string,
     );
-    return res.status(200).json(result);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(400).json({
-      error: "Cannot get  medicines details..!!",
-      details: error,
-    });
+    next(error);
   }
 };
 
-const updateMedicine = async (req: Request, res: Response) => {
+const updateMedicine = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user;
     if (!user) {
-      throw new Error("You are unauthorized..!!");
+      throw new ApiError(401, "You are unauthorized..!!");
     }
 
     const { medicineId } = req.params;
@@ -93,18 +99,20 @@ const updateMedicine = async (req: Request, res: Response) => {
 
     res.status(200).json(result);
   } catch (error) {
-    res.status(400).json({
-      error: "Cannot Update  Medicines Details..!!",
-      details: error,
-    });
+    next(error);
   }
 };
-const deleteMedicine = async (req: Request, res: Response) => {
+
+const deleteMedicine = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
   try {
     const user = req.user;
 
     if (!user) {
-      throw new Error("You are unauthorized!!");
+      throw new ApiError(401, "You are unauthorized!!");
     }
     const { medicineId } = req.params;
 
@@ -119,10 +127,7 @@ const deleteMedicine = async (req: Request, res: Response) => {
 
     res.status(200).json(result);
   } catch (error) {
-    res.status(400).json({
-      error: "Cannot Delete This Medicines..!!",
-      details: error,
-    });
+    next(error);
   }
 };
 
